@@ -1,22 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using TournamentBracket.Model;
 
 namespace TournamentBracket
@@ -27,18 +16,18 @@ namespace TournamentBracket
     public partial class MainWindow : Window//  , INotifyPropertyChanged
     {
         private readonly IBracketHolder bracketHolder;
-        private readonly  List<StackPanel> panels;
-        readonly int ButtonHeight = 30;
+        private List<StackPanel> panels;
+        readonly int ButtonHeight = 40;
         public MainWindow()
         {
-            bracketHolder=new BracketHolder(new DebugDataProvider());
-            panels=new List<StackPanel>();
+            bracketHolder=new BracketHolder(new DataProvider());
             this.DataContext = bracketHolder;
             InitializeComponent();
         }
-
+        
         public void CreateColumnsAndPopulateThemWithNicknames(int numberOfColumns)
         {
+            panels=new List<StackPanel>();
             for (int i = 1; i <= numberOfColumns; i++)
             {
                 var columnToAdd = new ColumnDefinition {Width = new GridLength(150)};
@@ -99,12 +88,13 @@ namespace TournamentBracket
                     
                     OrderedButton buttonToAdd = new OrderedButton()
                     {
+                        //Style = ReturnDefaultButtonStyle()
+                        Background = ReturnDefaultButtonStyle(),
                         Indices = new[]{columnNumber,buttonNumberInOrder},
                         Margin = marginOfButtonToAdd,
-                        Padding = new Thickness(10,0,10,0),
                         Height = ButtonHeight,
-                        CommandParameter = new[]{columnNumber,buttonNumberInOrder}
-                        //IsEnabled = ReturnIfThisButtonIsEnabled(Content)
+                        CommandParameter = new[]{columnNumber,buttonNumberInOrder},
+                        IsEnabled =true
                     };
 
                     buttonToAdd.SetBinding(Button.CommandProperty, buttonCommandBinding);
@@ -114,26 +104,36 @@ namespace TournamentBracket
             }
         }
 
-        private void CreateBracketFromFile()
+        private SolidColorBrush ReturnDefaultButtonStyle()
         {
+            var colorToSet = new Color {R = 123, G = 50, B = 197};
+            var background = new SolidColorBrush(colorToSet);
+            return background;
+        }
 
+        private void LoadBracketFromFile()
+        {
+            bracketHolder.LoadBracket();
+            CreateColumnsAndPopulateThemWithNicknames(bracketHolder.NumberOfColumns);
         }
         private Thickness ReturnThicknessOfButtonInColumn(int buttonNumberInOrder,int columnNumber)
         {
-            if (buttonNumberInOrder%2==0)
-            {
-                return new Thickness(10,columnNumber*30,10,0);
-            }
-            else
-            {
-                return new Thickness(10,columnNumber*30,10,0);
-            }
-            
+            double startingIndex = Math.Pow(2, columnNumber + 1)-1;
+            return new Thickness(10,startingIndex*ButtonHeight,10,0);
         }
 
         private Thickness ReturnThicknessOfFirstButtonInColumn(int columnNumber)
         {
-            return new Thickness(10,columnNumber*ButtonHeight+ButtonHeight/2,10,0);
+            if (columnNumber==0)
+                return new Thickness(10,0,10,0);
+            else
+            {
+                double startingIndex = Math.Pow(2, columnNumber)-1;
+                return new Thickness(10,startingIndex*ButtonHeight,10,0);
+            }
+            
+           
+
         }
 
         private void screenshotButton_Click(object sender, RoutedEventArgs e)
@@ -145,8 +145,21 @@ namespace TournamentBracket
         {
             bracketHolder.PopulateBracket();
             var numberOfColumns = bracketHolder.NumberOfColumns;
-            
             CreateColumnsAndPopulateThemWithNicknames(numberOfColumns);
+            DisableLoadingButtonsAfterLoadingBracket();
+        }
+
+        private void DisableLoadingButtonsAfterLoadingBracket()
+        {
+            loadingButton.IsEnabled = false;
+            loadBracketButton.IsEnabled = false;
+        }
+
+
+        private void loadBracketButton_Click(object sender, RoutedEventArgs e)
+        {
+            LoadBracketFromFile();
+            DisableLoadingButtonsAfterLoadingBracket();
         }
     }
 }

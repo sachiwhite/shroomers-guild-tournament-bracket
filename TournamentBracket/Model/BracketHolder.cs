@@ -23,7 +23,9 @@ namespace TournamentBracket.Model
 
         public RelayCommand<int[]> SetWinnerCommand { get;}
         public RelayCommand SaveBracketCommand { get; }
-        public int NumberOfColumns { get; private set; }
+
+        public int NumberOfColumns => Brackets.Count;
+
         public BracketHolder(IDataProvider dataProvider)
         {
             this.dataProvider = dataProvider;
@@ -41,7 +43,7 @@ namespace TournamentBracket.Model
         }
 
         
-        private void SetNumberOfColumns(string[] nicknames)
+        private int ReturnNumberOfColumns(string[] nicknames)
         {
             int tempNumber = nicknames.Length;
             int numberOfColumnsToAdd = 0;
@@ -57,7 +59,7 @@ namespace TournamentBracket.Model
             else
                 numberOfColumnsToAdd += 2;
 
-            NumberOfColumns = numberOfColumnsToAdd;
+            return numberOfColumnsToAdd;
         }
         
         private bool IsNicknamesNumberPowerOfTwo(int x)
@@ -68,24 +70,26 @@ namespace TournamentBracket.Model
             return (x & (x - 1)) == 0;
         }
        
-        public string[] PopulateBracket()
+        public void PopulateBracket()
         {
             var startingNicknames = dataProvider.ReturnStartingNicknames();
-            SetNumberOfColumns(startingNicknames);
-            InitializeBrackets(startingNicknames.Length);
-            ChooseStartingNicknames(startingNicknames);
-            
-            return startingNicknames;
+            var columnNumber = ReturnNumberOfColumns(startingNicknames);
+            if (!startingNicknames.Equals(Array.Empty<string>()))
+            {
+                InitializeBrackets(startingNicknames.Length,columnNumber);
+                ChooseStartingNicknames(startingNicknames);
+            }
+           
         }
         
-        private void InitializeBrackets(int numberOfNicknames)
+        private void InitializeBrackets(int numberOfNicknames, int numberOfColumns)
         {
-            for (int i = 0; i < NumberOfColumns; i++)
+            for (int i = 0; i < numberOfColumns; i++)
                 brackets.Add(new ObservableCollection<string>());
 
             int power = 0;
             numberOfNicknames = numberOfNicknames * 2 - 1;
-            for (int i = NumberOfColumns - 1; i >= 0; i--)
+            for (int i = numberOfColumns - 1; i >= 0; i--)
             {
                 var positionsToAdd = 1 << power;
                 if (numberOfNicknames - positionsToAdd < 0)
@@ -103,7 +107,7 @@ namespace TournamentBracket.Model
         {
             try
             {
-                var bracketToSave = JsonConvert.SerializeObject(this);
+                var bracketToSave = JsonConvert.SerializeObject(this.Brackets);
                 dataProvider.SaveBracket(bracketToSave);
             }
             catch (Exception e)
@@ -114,20 +118,29 @@ namespace TournamentBracket.Model
 
         }
 
-        private void LoadBracket()
+        public void LoadBracket()
         {
-            BracketHolder bracketToLoad=null;
             try
             {
+                #warning todo: refactor
                 string jsonBracket = dataProvider.LoadBracket();
-                var tempBracket = JsonConvert.DeserializeObject(jsonBracket);
-                bracketToLoad = tempBracket as BracketHolder;
-                 
+                var bracketToLoad = JsonConvert.DeserializeObject<ObservableCollection<ObservableCollection<string>>>(jsonBracket);
+                this.brackets = new ObservableCollection<ObservableCollection<string>>();
+                for (int i = 0; i < bracketToLoad.Count; i++)
+                {
+                    var currentlyLoadedBracket = bracketToLoad[i];
+                    brackets.Add(new ObservableCollection<string>());
+                    for (int j = 0; j < currentlyLoadedBracket.Count; j++)
+                    {
+                      brackets[i].Add(currentlyLoadedBracket[j]);
+                    }
+                }
+
 
             }
             catch (Exception e)
             {
-                Console.WriteLine(e); 
+                Messaging.ShowErrorMessage("Nie można było załadować drabinki."); 
             }
             
         }

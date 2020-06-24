@@ -34,7 +34,28 @@ namespace TournamentBracket.Model
 
         public string LoadBracket()
         {
-            throw new NotImplementedException();
+            var path = ReturnPathForLoadingBracket();
+            using (StreamReader reader = new StreamReader(path))
+            {
+                try
+                {
+                    var bracketJson = reader.ReadToEnd();
+                    return bracketJson;
+                }
+                catch (OutOfMemoryException e)
+                {
+                    Messaging.ShowErrorMessage("Błąd odczytywania drabinki z pliku. Za mało pamięci ");
+                   
+                }
+                catch (IOException e)
+                {
+                    Messaging.ShowErrorMessage("Błąd odczytywania drabinki z pliku. Nie można uzyskać dostępu do pliku. ");
+                    
+                }
+                
+            }
+
+            return string.Empty;
         }
 
         public string[] ReturnStartingNicknames()

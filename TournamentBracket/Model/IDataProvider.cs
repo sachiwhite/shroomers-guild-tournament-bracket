@@ -1,4 +1,6 @@
-﻿namespace TournamentBracket.Model
+﻿using System.Runtime.CompilerServices;
+
+namespace TournamentBracket.Model
 {
     public interface IDataProvider
     {
@@ -6,5 +8,6 @@
         string[] ReturnStartingNicknames();
         void SaveBracket(string bracketContent);
         string LoadBracket();
+        
     }
 }

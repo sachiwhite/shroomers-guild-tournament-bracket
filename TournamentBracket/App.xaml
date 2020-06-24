@@ -4,6 +4,22 @@
              xmlns:local="clr-namespace:TournamentBracket"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+         <Style TargetType="TextBlock">
+             <Setter Property="Foreground" Value="White"></Setter>
+             <Setter Property="TextWrapping" Value="Wrap"></Setter>
+             <Setter Property="Margin" Value="0,10"></Setter>
+         </Style>
+
+        <Style x:Key="DefaultButtonStyle" TargetType="Button">
+            <Setter Property="BorderThickness" Value="2"></Setter>
+            <Setter Property="BorderBrush"
+                    Value="#FF5C2693"></Setter>
+            <Setter Property="Padding" Value="0,7"></Setter>
+            <Setter Property="Foreground" Value="#FFFFFF"></Setter>
+            <Setter Property="Background" Value="#7B32C5"></Setter>
+        </Style>
+        <Style TargetType="Grid">
+            <Setter Property="Background" Value="#171619"></Setter>
+        </Style>
     </Application.Resources>
 </Application>

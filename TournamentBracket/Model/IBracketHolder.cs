@@ -7,8 +7,9 @@ namespace TournamentBracket.Model
     public interface IBracketHolder
     {
         ObservableCollection<ObservableCollection<string>> Brackets { get; }
-        string[] PopulateBracket();
+        void PopulateBracket();
         int NumberOfColumns { get; }
         RelayCommand<int[]> SetWinnerCommand { get;}
+        void LoadBracket();
     }
 }

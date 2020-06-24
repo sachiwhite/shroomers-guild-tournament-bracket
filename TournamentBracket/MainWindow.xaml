@@ -8,36 +8,46 @@
         Title="drabinka turniejowa" Height="450" Width="800">
     <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Auto">
         <Grid x:Name="mainGrid"
-              ShowGridLines="False">
+              ShowGridLines="True">
             <Grid.RowDefinitions>
                 <RowDefinition></RowDefinition>
                 <RowDefinition Height="50"></RowDefinition>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="400"></ColumnDefinition>
+                <ColumnDefinition Width="300"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <StackPanel 
             
                 Grid.Column="0">
-                <Label HorizontalAlignment="Center" Content="Wczytaj listę nicków graczy, którzy biorą udział w turnieju."></Label>
+                <TextBlock TextAlignment="Center" HorizontalAlignment="Center" Text="Wczytaj listę nicków graczy, którzy biorą udział w turnieju."></TextBlock>
                 <Button
                     x:Name="loadingButton"
                     Content="Kliknij, by wczytać nicki z pliku"
                     Padding="5,3"
+                    Style="{StaticResource DefaultButtonStyle}"
                     HorizontalAlignment="Center"
                         Click="loadingButton_Click">
                 </Button>
                 <Button
+                    Style="{StaticResource DefaultButtonStyle}"
                     x:Name="screenshotButton"
                     Content="Zrób screenshota"
-                        HorizontalAlignment="Center"
-                        Padding="5,3"
-                        Click="screenshotButton_Click">
+                    HorizontalAlignment="Center"
+                    Padding="5,3"
+                    Click="screenshotButton_Click">
                 </Button>
-                <Label Margin="0,10,0,0" HorizontalAlignment="Center" Content="Koniec turnieju na dziś?"></Label>
-                <Button HorizontalAlignment="Center" Padding="5,3" Command="{Binding SaveBracketCommand}" Content="Zapisz drabinkę"></Button>
-                <Label Margin="0,10,0,0" HorizontalAlignment="Center" Content="Masz już istniejącą drabinkę?"></Label>
-                <Button HorizontalAlignment="Center" Padding="5,3" Content="Wczytaj drabinkę"></Button>
+               
+                <TextBlock Margin="0,10,0,0" HorizontalAlignment="Center" Text="Koniec turnieju na dziś?"></TextBlock>
+                <Button Style="{StaticResource DefaultButtonStyle}"
+                        HorizontalAlignment="Center" Padding="5,3" Command="{Binding SaveBracketCommand}" Content="Zapisz drabinkę"></Button>
+                <TextBlock Margin="0,10,0,0" HorizontalAlignment="Center" Text="Masz już istniejącą drabinkę?"></TextBlock>
+                <Button x:Name="loadBracketButton"
+                        Style="{StaticResource DefaultButtonStyle}"
+                        HorizontalAlignment="Center" Padding="5,3" Content="Wczytaj drabinkę"
+                        Click="loadBracketButton_Click"></Button>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Grid.Row="1">
+                
             </StackPanel>
         </Grid>
     </ScrollViewer>

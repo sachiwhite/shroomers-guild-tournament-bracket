@@ -87,7 +87,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Messaging.cs" />
     <Compile Include="Model\BracketHolder.cs" />
+    <Compile Include="Model\DataProvider.cs" />
     <Compile Include="Model\DebugDataProvider.cs" />
     <Compile Include="Model\IBracketHolder.cs" />
     <Compile Include="Model\IDataProvider.cs" />
