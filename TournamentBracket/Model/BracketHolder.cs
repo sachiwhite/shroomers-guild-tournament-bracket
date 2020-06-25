@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using Newtonsoft.Json;
@@ -34,6 +35,10 @@ namespace TournamentBracket.Model
             brackets = new ObservableCollection<ObservableCollection<string>>();
         }
 
+        public void SaveScreenshotOfBracket(PngBitmapEncoder encoder)
+        {
+            dataProvider.SaveScreenshotOfBracket(encoder);
+        }
         public void SetWinnerOfBracket(int[] indices)
         {
             int columnFrom = indices[0];
@@ -84,6 +89,7 @@ namespace TournamentBracket.Model
         
         private void InitializeBrackets(int numberOfNicknames, int numberOfColumns)
         {
+            brackets = new ObservableCollection<ObservableCollection<string>>();
             for (int i = 0; i < numberOfColumns; i++)
                 brackets.Add(new ObservableCollection<string>());
 
@@ -112,7 +118,7 @@ namespace TournamentBracket.Model
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Messaging.ShowMessage("Wystąpił błąd podczas serializacji drabinki.");
                
             }
 
@@ -122,7 +128,7 @@ namespace TournamentBracket.Model
         {
             try
             {
-                #warning todo: refactor
+                
                 string jsonBracket = dataProvider.LoadBracket();
                 var bracketToLoad = JsonConvert.DeserializeObject<ObservableCollection<ObservableCollection<string>>>(jsonBracket);
                 this.brackets = new ObservableCollection<ObservableCollection<string>>();
@@ -130,20 +136,20 @@ namespace TournamentBracket.Model
                 {
                     var currentlyLoadedBracket = bracketToLoad[i];
                     brackets.Add(new ObservableCollection<string>());
+                 
                     for (int j = 0; j < currentlyLoadedBracket.Count; j++)
-                    {
                       brackets[i].Add(currentlyLoadedBracket[j]);
-                    }
                 }
 
 
             }
             catch (Exception e)
             {
-                Messaging.ShowErrorMessage("Nie można było załadować drabinki."); 
+                Messaging.ShowMessage("Nie można było załadować drabinki."); 
             }
             
         }
+
         private void ChooseStartingNicknames(string[] nicknames)
         {
             Random random = new Random();

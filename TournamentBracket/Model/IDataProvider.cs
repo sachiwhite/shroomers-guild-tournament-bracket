@@ -1,4 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
+using System.Windows.Media.Imaging;
 
 namespace TournamentBracket.Model
 {
@@ -8,6 +9,7 @@ namespace TournamentBracket.Model
         string[] ReturnStartingNicknames();
         void SaveBracket(string bracketContent);
         string LoadBracket();
-        
+
+        void SaveScreenshotOfBracket(PngBitmapEncoder encoder);
     }
 }

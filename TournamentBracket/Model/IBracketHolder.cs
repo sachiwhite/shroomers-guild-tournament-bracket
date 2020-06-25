@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Windows.Media.Imaging;
 using GalaSoft.MvvmLight.CommandWpf;
 
 namespace TournamentBracket.Model
@@ -9,7 +10,8 @@ namespace TournamentBracket.Model
         ObservableCollection<ObservableCollection<string>> Brackets { get; }
         void PopulateBracket();
         int NumberOfColumns { get; }
-        RelayCommand<int[]> SetWinnerCommand { get;}
         void LoadBracket();
+        void SaveScreenshotOfBracket(PngBitmapEncoder encoder);
+
     }
 }

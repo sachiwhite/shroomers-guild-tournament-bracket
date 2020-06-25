@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
 namespace TournamentBracket.Model
 {
@@ -44,18 +45,23 @@ namespace TournamentBracket.Model
                 }
                 catch (OutOfMemoryException e)
                 {
-                    Messaging.ShowErrorMessage("Błąd odczytywania drabinki z pliku. Za mało pamięci ");
+                    Messaging.ShowMessage("Błąd odczytywania drabinki z pliku. Za mało pamięci ");
                    
                 }
                 catch (IOException e)
                 {
-                    Messaging.ShowErrorMessage("Błąd odczytywania drabinki z pliku. Nie można uzyskać dostępu do pliku. ");
+                    Messaging.ShowMessage("Błąd odczytywania drabinki z pliku. Nie można uzyskać dostępu do pliku. ");
                     
                 }
                 
             }
 
             return string.Empty;
+        }
+
+        public void SaveScreenshotOfBracket(PngBitmapEncoder encoder)
+        {
+            throw new NotImplementedException();
         }
 
         public string[] ReturnStartingNicknames()

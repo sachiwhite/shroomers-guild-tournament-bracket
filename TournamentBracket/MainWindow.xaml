@@ -8,7 +8,7 @@
         Title="drabinka turniejowa" Height="450" Width="800">
     <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Auto">
         <Grid x:Name="mainGrid"
-              ShowGridLines="True">
+              ShowGridLines="False">
             <Grid.RowDefinitions>
                 <RowDefinition></RowDefinition>
                 <RowDefinition Height="50"></RowDefinition>
@@ -47,7 +47,9 @@
                         Click="loadBracketButton_Click"></Button>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Grid.Row="1">
-                
+                <Image Margin="10,0,10,2" Source="logobottom.png"></Image>
+                <TextBlock FontSize="8"
+                           Margin="10,20,0,0" Text="by Blanka for Gildia Grzybiarzy"></TextBlock>
             </StackPanel>
         </Grid>
     </ScrollViewer>

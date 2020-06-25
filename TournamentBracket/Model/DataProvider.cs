@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 using Microsoft.Win32;
 
 namespace TournamentBracket.Model
@@ -12,14 +13,27 @@ namespace TournamentBracket.Model
     {
         private string savingBracketPath;
         private string openingBracketPath;
+        private string screenshotPath;
 
         public DataProvider()
         {
             savingBracketPath = string.Empty;
             openingBracketPath = string.Empty;
+            screenshotPath = string.Empty;
         }
 
-        private void SetFilePathForSaving()
+        private void SetFilePathForSavingScreenshot()
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Title = "Wybierz, gdzie zapisać screenshot drabinki";
+            saveFileDialog.Filter = "Plik PNG |*.png|Wszystkie pliki|*.*";
+
+            saveFileDialog.ShowDialog();
+         
+            if (saveFileDialog.FileName!=string.Empty)
+                screenshotPath = saveFileDialog.FileName;
+        }
+        private void SetFilePathForSavingBracket()
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Title = "Wybierz, gdzie zapisać drabinkę";
@@ -38,9 +52,8 @@ namespace TournamentBracket.Model
             openFileDialog.Filter = "Plik tekstowy|*.txt|Wszystkie pliki|*.*";
 
             openFileDialog.ShowDialog();
+         
             return openFileDialog.FileName;
-            if (openFileDialog.FileName!=string.Empty)
-                openingBracketPath = openFileDialog.FileName;
         }
         private void SetFilePathForOpening()
         {
@@ -66,7 +79,7 @@ namespace TournamentBracket.Model
                 }
                 catch (Exception ex)
                 {
-                    Messaging.ShowErrorMessage("Ładowanie drabinki z pliku nie powiodło się.");                     
+                    Messaging.ShowMessage("Ładowanie drabinki z pliku nie powiodło się.");                     
                 }
 
                 
@@ -77,7 +90,26 @@ namespace TournamentBracket.Model
 
         public void SaveBracket(string bracketContent)
         {
-            throw new NotImplementedException();
+            SetFilePathForSavingBracket();
+            if (savingBracketPath!=String.Empty)
+            {
+                using (StreamWriter writer=new StreamWriter(savingBracketPath,false))
+                {
+                    try
+                    {
+                        writer.WriteLine(bracketContent);
+                    }
+                    catch (IOException e)
+                    {
+                        Messaging.ShowMessage("Nie można było uzyskać dostępu do pliku, w którym chcesz zapisać drabinkę. ");
+                    }
+                    catch (Exception e)
+                    {
+                        Messaging.ShowMessage("Wystąpił nieznany błąd przy zapisywaniu drabinki.");
+                    }
+                    
+                }
+            }
         }
 
         public string LoadBracket()
@@ -94,12 +126,12 @@ namespace TournamentBracket.Model
                     }
                     catch (OutOfMemoryException e)
                     {
-                        Messaging.ShowErrorMessage("Błąd odczytywania drabinki z pliku. Za mało pamięci ");
+                        Messaging.ShowMessage("Błąd odczytywania drabinki z pliku. Za mało pamięci ");
                    
                     }
                     catch (IOException e)
                     {
-                        Messaging.ShowErrorMessage("Błąd odczytywania drabinki z pliku. Nie można uzyskać dostępu do pliku. ");
+                        Messaging.ShowMessage("Błąd odczytywania drabinki z pliku. Nie można uzyskać dostępu do pliku. ");
                     
                     }
                 
@@ -107,11 +139,44 @@ namespace TournamentBracket.Model
             }
             else
             {
-                Messaging.ShowErrorMessage("Nie wybrano pliku do załadowania!");
+                Messaging.ShowMessage("Nie wybrano pliku do załadowania!");
             }
             
 
             return string.Empty;
+        }
+
+        private Stream ReturnStreamForSavingFiles(string path)
+        {
+            try
+            {
+                return File.Create(path);
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public void SaveScreenshotOfBracket(PngBitmapEncoder encoder)
+        {
+            SetFilePathForSavingScreenshot();
+            if (screenshotPath != String.Empty)
+            {
+                try
+                {
+                    var fileStream = ReturnStreamForSavingFiles(screenshotPath);
+                    encoder.Save(fileStream);
+
+                }
+                catch (Exception ex)
+                {
+                    Messaging.ShowMessage("Zapisywanie screenshota drabinki nie powiodło się");
+                }
+                
+                
+            }
+            Messaging.ShowMessage("Screenshot zapisano!","Sukces");
         }
     }
 }

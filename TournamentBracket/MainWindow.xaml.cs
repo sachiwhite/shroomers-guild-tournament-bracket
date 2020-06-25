@@ -20,6 +20,7 @@ namespace TournamentBracket
         readonly int ButtonHeight = 40;
         public MainWindow()
         {
+            panels=new List<StackPanel>();
             bracketHolder=new BracketHolder(new DataProvider());
             this.DataContext = bracketHolder;
             InitializeComponent();
@@ -27,6 +28,13 @@ namespace TournamentBracket
         
         public void CreateColumnsAndPopulateThemWithNicknames(int numberOfColumns)
         {
+            if (panels.Count!=0)
+            {
+                CleanStackPanels();
+
+            }
+
+            
             panels=new List<StackPanel>();
             for (int i = 1; i <= numberOfColumns; i++)
             {
@@ -35,11 +43,20 @@ namespace TournamentBracket
                
                 StackPanel stackPanel=new StackPanel{Name=$"StackPanel{i}"};
                 panels.Add(stackPanel);
-                stackPanel.Children.Add(new Label(){Content=$"Kolumna {i}" });
                 mainGrid.Children.Add(stackPanel);
                 Grid.SetColumn(stackPanel,i);              
             }
             PopulateStackPanels();
+        }
+
+        private void CleanStackPanels()
+        {
+            for (int i = 0; i < panels.Count; i++)
+            {
+                panels[i].Children.Clear();
+                mainGrid.Children.Remove(panels[i]);
+            }
+            panels.Clear();
         }
 
         public void MakeBracketsScreenshot()
@@ -50,10 +67,7 @@ namespace TournamentBracket
             encoder.Frames.Add(BitmapFrame.Create(targetBitmap));
             targetBitmap.Render(panels[0]);
             encoder.Frames.Add(BitmapFrame.Create(targetBitmap));
-            using (Stream fileStream =  File.Create("screenshot.png"))
-            {
-                encoder.Save(fileStream);
-            }
+            bracketHolder.SaveScreenshotOfBracket(encoder);
         }
 
         private Binding ReturnButtonContentBinding(int columnNumber,int buttonNumberInOrder)
@@ -83,13 +97,13 @@ namespace TournamentBracket
 
                     Binding buttonCommandBinding = ReturnButtonCommandBinding();
                     
-                    Thickness marginOfButtonToAdd = buttonNumberInOrder==0 ? ReturnThicknessOfFirstButtonInColumn(columnNumber) : ReturnThicknessOfButtonInColumn(buttonNumberInOrder,columnNumber);
+                    Thickness marginOfButtonToAdd = buttonNumberInOrder==0 ? 
+                        ReturnThicknessOfFirstButtonInColumn(columnNumber) : ReturnThicknessOfButtonInColumn(buttonNumberInOrder,columnNumber);
 
                     
                     OrderedButton buttonToAdd = new OrderedButton()
                     {
-                        //Style = ReturnDefaultButtonStyle()
-                        Background = ReturnDefaultButtonStyle(),
+                        Background = new SolidColorBrush(Colors.BlueViolet),
                         Indices = new[]{columnNumber,buttonNumberInOrder},
                         Margin = marginOfButtonToAdd,
                         Height = ButtonHeight,
@@ -104,12 +118,6 @@ namespace TournamentBracket
             }
         }
 
-        private SolidColorBrush ReturnDefaultButtonStyle()
-        {
-            var colorToSet = new Color {R = 123, G = 50, B = 197};
-            var background = new SolidColorBrush(colorToSet);
-            return background;
-        }
 
         private void LoadBracketFromFile()
         {
@@ -151,8 +159,8 @@ namespace TournamentBracket
 
         private void DisableLoadingButtonsAfterLoadingBracket()
         {
-            loadingButton.IsEnabled = false;
-            loadBracketButton.IsEnabled = false;
+           // loadingButton.IsEnabled = false;
+           // loadBracketButton.IsEnabled = false;
         }
 
 

@@ -9,9 +9,9 @@ namespace TournamentBracket
 {
     public static class Messaging
     {
-        public static void ShowErrorMessage(string errorMessage)
+        public static void ShowMessage(string errorMessage,string caption="Błąd!")
         {
-            MessageBox.Show(errorMessage, "Błąd");
+            MessageBox.Show(errorMessage, caption);
         }
         
     }

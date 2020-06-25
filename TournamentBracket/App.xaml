@@ -21,5 +21,6 @@
         <Style TargetType="Grid">
             <Setter Property="Background" Value="#171619"></Setter>
         </Style>
+       
     </Application.Resources>
 </Application>
