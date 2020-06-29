@@ -3,7 +3,6 @@ A simple app for creating tournament brackets made for my friends from [Shroomer
 
 ## Table of contents
 * [General info](#general-info)
-* [Screenshots](#screenshots)
 * [Technologies](#technologies)
 * [Setup](#setup)
 * [Features](#features)
@@ -12,9 +11,6 @@ A simple app for creating tournament brackets made for my friends from [Shroomer
 
 ## General info
 The purpose of the project is to facilitate creating tournament brackets and saving them for futher modification. The app takes a list of nicknames in .txt file, then shuffles them and fits in the bracket. The bracket can be saved to JSON file, and further loaded and modified again.
-
-## Screenshots
-![Example screenshot](./img/screenshot.png)
 
 ## Technologies
 * C# 7.3
